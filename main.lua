@@ -16,29 +16,7 @@ function love.load()
 end
 
 function love.update(dt)
-	local effectiveSpeed = player.speed
-
-	local a = love.keyboard.isDown("a")
-	local d = love.keyboard.isDown("d")
-	local w = love.keyboard.isDown("w")
-	local s = love.keyboard.isDown("s")
-
-	if (a and w) or (a and s) or (d and w) or (d and s) then
-		effectiveSpeed = math.sin(math.pi / 4) * effectiveSpeed
-	end
-
-	if a then
-		player.pos.x = player.pos.x - effectiveSpeed * dt
-	end
-	if d then
-		player.pos.x = player.pos.x + effectiveSpeed * dt
-	end
-	if w then
-		player.pos.y = player.pos.y - effectiveSpeed * dt
-	end
-	if s then
-		player.pos.y = player.pos.y + effectiveSpeed * dt
-	end
+	player:update(dt)
 end
 
 function love.draw()
@@ -67,4 +45,16 @@ function love.draw()
 
 	love.graphics.setCanvas()
 	love.graphics.draw(canvas, 0, 0, 0, SCALE)
+
+	if DEBUG then
+		love.graphics.setColor(0.2, 0.2, 0.2)
+		love.graphics.rectangle("fill", 0, 0, 200, 32)
+		love.graphics.setColor(1,1,1)
+		love.graphics.print(
+			string.format("Seconds since dodge: %.1f\n"..
+						  "Player position: (%.2f, %.2f)",
+						  player.secsSinceDodge,
+						  player.pos.x, player.pos.y)
+		)
+	end
 end
