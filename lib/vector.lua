@@ -44,7 +44,7 @@ local function randomDirection(len_min, len_max)
 	assert(len_max >= len_min, "len_max must be greater than or equal to len_min")
 
 	return fromPolar(math.random() * 2*math.pi,
-	                 math.random() * (len_max-len_min) + len_min)
+					 math.random() * (len_max-len_min) + len_min)
 end
 
 local function isvector(v)
@@ -204,11 +204,11 @@ end
 
 -- the module
 return setmetatable({
-	new             = new,
-	fromPolar       = fromPolar,
+	new				= new,
+	fromPolar		= fromPolar,
 	randomDirection = randomDirection,
-	isvector        = isvector,
-	zero            = zero
+	isvector		= isvector,
+	zero			= zero
 }, {
 	__call = function(_, ...) return new(...) end
 })
