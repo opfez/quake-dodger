@@ -11,6 +11,7 @@ MAP_COLUMNS = 6
 MAP_ROWS = 8
 
 require("lib/functional")
+require("lib/util")
 vector = require("lib/vector")
 
 function love.conf(t)

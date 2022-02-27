@@ -1,12 +1,14 @@
 require("perspective")
+require("player")
+require("entity")
 
 local canvas
 
 resources = {}
 
 function love.load()
-	resources.tile = love.graphics.newImage("resources/tile.png")
-	resources.tile:setFilter("nearest", "nearest")
+	resources.tile = loadImage("tile.png")
+	resources.missingTexture = loadImage("missing.png")
 
 	canvas = love.graphics.newCanvas(love.graphics.getDimensions())
 	canvas:setFilter("nearest", "nearest")
@@ -14,6 +16,29 @@ function love.load()
 end
 
 function love.update(dt)
+	local effectiveSpeed = player.speed
+
+	local a = love.keyboard.isDown("a")
+	local d = love.keyboard.isDown("d")
+	local w = love.keyboard.isDown("w")
+	local s = love.keyboard.isDown("s")
+
+	if (a and w) or (a and s) or (d and w) or (d and s) then
+		effectiveSpeed = math.sin(math.pi / 4) * effectiveSpeed
+	end
+
+	if a then
+		player.pos.x = player.pos.x - effectiveSpeed * dt
+	end
+	if d then
+		player.pos.x = player.pos.x + effectiveSpeed * dt
+	end
+	if w then
+		player.pos.y = player.pos.y - effectiveSpeed * dt
+	end
+	if s then
+		player.pos.y = player.pos.y + effectiveSpeed * dt
+	end
 end
 
 function love.draw()
@@ -37,6 +62,8 @@ function love.draw()
 			love.graphics.setColor(1,1,1)
 		end
 	end
+
+	drawEntity(player)
 
 	love.graphics.setCanvas()
 	love.graphics.draw(canvas, 0, 0, 0, SCALE)

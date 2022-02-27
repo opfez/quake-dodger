@@ -1,3 +1,5 @@
+-- TODO: Add moving camera support
+
 function toViewspace(coord, spriteW, spriteH)
 	local spriteW = spriteW or DEF_SPRITE_WIDTH
 	local spriteH = spriteH or DEF_SPRITE_HEIGHT
