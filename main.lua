@@ -27,6 +27,7 @@ function love.draw()
 	local x, y = getScaledMousePosition()
 	local sel = toWorldspace(vector.new(x, y))
 
+	-- Draw ground tiles
 	for i = 0, MAP_ROWS - 1 do
 		for j = 0, MAP_COLUMNS - 1 do
 			local idx = vector.new(j, i)
@@ -41,11 +42,13 @@ function love.draw()
 		end
 	end
 
+	-- TODO: Draw player behind or in front of above-ground sprites
 	drawEntity(player)
 
 	love.graphics.setCanvas()
 	love.graphics.draw(canvas, 0, 0, 0, SCALE)
 
+	-- Debug information
 	if DEBUG then
 		love.graphics.setColor(0.2, 0.2, 0.2)
 		love.graphics.rectangle("fill", 0, 0, 200, 32)
