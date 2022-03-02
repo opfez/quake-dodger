@@ -5,7 +5,7 @@ function loadTiles()
 		loadImage("rockcrack.png"),
 		loadImage("rockcrack2.png"),
 		loadImage("rockcrackfinal.png"),
-		loadImage("water"),
+		loadImage("water.png"),
 	}
 end
 
@@ -19,8 +19,8 @@ end
 map = {
 	{1,1,1,1,1,1},
 	{1,2,2,2,2,1},
-	{1,2,2,2,2,1},
-	{1,2,2,2,2,1},
+	{1,6,6,2,2,1},
+	{1,6,6,2,2,1},
 	{1,2,2,2,2,1},
 	{1,2,2,2,2,1},
 	{1,2,2,2,2,1},

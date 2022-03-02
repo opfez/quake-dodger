@@ -41,21 +41,13 @@ function love.draw()
 
 	love.graphics.clear()
 
-	local x, y = getScaledMousePosition()
-	local sel = toWorldspace(vector.new(x, y))
-
 	-- Draw ground tiles
 	for i = 0, MAP_ROWS - 1 do
 		for j = 0, MAP_COLUMNS - 1 do
 			local idx = vector.new(j, i)
 			local pos = toViewspace(idx)
 
-			if idx == sel then
-				love.graphics.setColor(0,1,0)
-			end
-
 			love.graphics.draw(resources.tiles[map[i+1][j+1]], pos.x, pos.y)
-			love.graphics.setColor(1,1,1)
 		end
 	end
 
