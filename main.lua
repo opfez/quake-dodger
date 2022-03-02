@@ -1,14 +1,27 @@
 require("perspective")
 require("player")
+require("doggo")
 require("entity")
+require("map")
 
 local canvas
+local entities = {}
 
 resources = {}
 
 function love.load()
-	resources.tile = loadImage("tile.png")
+	math.randomseed(os.time())
+
+	resources.tiles = loadTiles()
 	resources.missingTexture = loadImage("missing.png")
+	resources.playerWalkRight = loadImage("walkr.png")
+	resources.playerDodgeRight = loadImage("rolling.png")
+	resources.playerIdle = loadImage("idle.png")
+	resources.doggo = loadImage("doggo.png")
+
+	player = newPlayer()
+
+	table.insert(entities, newDoggo())
 
 	canvas = love.graphics.newCanvas(love.graphics.getDimensions())
 	canvas:setFilter("nearest", "nearest")
@@ -17,6 +30,10 @@ end
 
 function love.update(dt)
 	player:update(dt)
+
+	for i, ent in ipairs(entities) do
+		ent:update(dt)
+	end
 end
 
 function love.draw()
@@ -37,13 +54,24 @@ function love.draw()
 				love.graphics.setColor(0,1,0)
 			end
 
-			love.graphics.draw(resources.tile, pos.x, pos.y)
+			love.graphics.draw(resources.tiles[map[i+1][j+1]], pos.x, pos.y)
 			love.graphics.setColor(1,1,1)
 		end
 	end
 
-	-- TODO: Draw player behind or in front of above-ground sprites
-	drawEntity(player)
+	local playerDrawn = false
+	for i, ent in ipairs(entities) do
+		if not playerDrawn and ent.pos.y > player.pos.y then
+			playerDrawn = true
+			drawEntity(player)
+		end
+		drawEntity(ent)
+	end
+	if not playerDrawn then
+		playerDrawn = true
+		drawEntity(player)
+	end
+
 
 	love.graphics.setCanvas()
 	love.graphics.draw(canvas, 0, 0, 0, SCALE)

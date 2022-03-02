@@ -8,3 +8,21 @@ function loadImage(filename)
 
 	return res
 end
+
+function newAnimation(image, width, height, duration, transform)
+	local animation = {
+		spriteSheet = image,
+		quads = {},
+		transform = transform,
+		duration = duration or 1,
+		currentTime = 0
+	}
+
+	for y = 0, image:getHeight() - height, height do
+        for x = 0, image:getWidth() - width, width do
+            table.insert(animation.quads, love.graphics.newQuad(x, y, width, height, image:getDimensions()))
+        end
+	end
+
+	return animation
+end
