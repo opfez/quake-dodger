@@ -1,12 +1,20 @@
 function newPlayer()
+	local function isPossibleToMove(x, y)
+		local tile = map[math.floor(y)+1][math.floor(x)+1]
+		return not (tile == TILE_WATER)
+	end
+
 	local spriteW = 32
 	local spriteH = 32
 
 	local player = {
+		state = "alive",
 		health = 3,
-		pos = vector.new(0, 1),
+		pos = vector.new(1, 3),
 		speed = 2,
 		speeds = {2, 6}, -- Walk/Dodging
+		width = spriteW,
+		height = spriteH,
 		animations = {
 			idleRight = newAnimation(resources.playerIdle, spriteW, spriteH),
 			idleLeft = newAnimation(resources.playerIdle, spriteW, spriteH, 1,
@@ -36,7 +44,7 @@ function newPlayer()
 			w = false,
 			s = false,
 		},
-		update = function(self, dt)
+		aliveUpdate = function(self, dt)
 			local walkSpeed = self.speed
 			local dodgeSpeed = walkSpeed * 1.1
 			local dodgeCooldown = 1
@@ -44,6 +52,19 @@ function newPlayer()
 
 			local effectiveSpeed = walkSpeed
 			if self.dodging then effectiveSpeed = dodgeSpeed end
+
+			-- Death check
+			if not self.dodging then
+				local i = math.floor(player.pos.y) + 1
+				local j = math.floor(player.pos.x) + 1
+				local tile = map[i][j]
+
+				if tile == TILE_ROCK_HOLE then
+					self.state = "falling"
+					self.update = self.fallingUpdate
+					return
+				end
+			end
 
 			-- Jesus Christ
 			local a = false
@@ -73,17 +94,31 @@ function newPlayer()
 
 			if a then
 				self.lastDirection = "left"
-				self.pos.x = self.pos.x - effectiveSpeed * dt
+
+				local newX = self.pos.x - effectiveSpeed * dt
+				if isPossibleToMove(newX, self.pos.y) then
+					self.pos.x = self.pos.x - effectiveSpeed * dt
+				end
 			end
 			if d then
 				self.lastDirection = "right"
-				self.pos.x = self.pos.x + effectiveSpeed * dt
+
+				local newX = self.pos.x + effectiveSpeed * dt
+				if isPossibleToMove(newX, self.pos.y) then
+					self.pos.x = self.pos.x + effectiveSpeed * dt
+				end
 			end
 			if w then
-				self.pos.y = self.pos.y - effectiveSpeed * dt
+				local newY = self.pos.y - effectiveSpeed * dt
+				if isPossibleToMove(self.pos.x, newY) then
+					self.pos.y = self.pos.y - effectiveSpeed * dt
+				end
 			end
 			if s then
-				self.pos.y = self.pos.y + effectiveSpeed * dt
+				local newY = self.pos.y + effectiveSpeed * dt
+				if isPossibleToMove(self.pos.x, newY) then
+					self.pos.y = self.pos.y + effectiveSpeed * dt
+				end
 			end
 
 			if self.lastDirection == "right" then
@@ -119,9 +154,13 @@ function newPlayer()
 			end
 
 			updateAnimations(self, dt)
+		end,
+		fallingUpdate = function(self, dt)
+			return
 		end
 	}
 
+	player.update = player.aliveUpdate
 	player.activeAnimation = player.animations.walk_right
 
 	return player

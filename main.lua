@@ -34,12 +34,35 @@ function love.update(dt)
 	for i, ent in ipairs(entities) do
 		ent:update(dt)
 	end
+
+	for i = 1, MAP_ROWS do
+		for j = 1, MAP_COLUMNS do
+			local tile = map[i][j]
+
+			if tile == TILE_ROCK and math.random() < 0.0008 then
+				map[i][j] = TILE_CRACK1
+			elseif tile == TILE_CRACK1 then
+				mapTimes[i][j] = mapTimes[i][j] + dt
+
+				if mapTimes[i][j] >= 1 then
+					map[i][j] = TILE_CRACK2
+				end
+			elseif tile == TILE_CRACK2 then
+				mapTimes[i][j] = mapTimes[i][j] + dt
+
+				if mapTimes[i][j] >= 2 then
+					map[i][j] = TILE_HOLE
+				end
+			end
+		end
+	end
 end
 
 function love.draw()
 	love.graphics.setCanvas(canvas)
 
 	love.graphics.clear()
+	love.graphics.setColor(1,1,1)
 
 	-- Draw ground tiles
 	for i = 0, MAP_ROWS - 1 do
@@ -47,7 +70,8 @@ function love.draw()
 			local idx = vector.new(j, i)
 			local pos = toViewspace(idx)
 
-			love.graphics.draw(resources.tiles[map[i+1][j+1]], pos.x, pos.y)
+			local tile = resources.tiles[map[i+1][j+1]]
+			love.graphics.draw(tile, pos.x, pos.y)
 		end
 	end
 
@@ -63,7 +87,6 @@ function love.draw()
 		playerDrawn = true
 		drawEntity(player)
 	end
-
 
 	love.graphics.setCanvas()
 	love.graphics.draw(canvas, 0, 0, 0, SCALE)

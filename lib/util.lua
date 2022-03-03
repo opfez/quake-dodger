@@ -26,3 +26,12 @@ function newAnimation(image, width, height, duration, transform)
 
 	return animation
 end
+
+function round(n)
+	local m = n - math.floor(n)
+	if m < 0.5 then
+		return math.floor(n)
+	else
+		return math.ceil(n)
+	end
+end

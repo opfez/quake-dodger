@@ -3,7 +3,16 @@ function drawEntity(ent)
 
 	local spriteNum = math.floor(anim.currentTime / anim.duration * #anim.quads) + 1
 
-	local pos = toViewspace(ent.pos)
+	local pos = toViewspace(ent.pos, ent.width, ent.height)
+	pos.x = pos.x - ent.width / 2
+	pos.y = pos.y - ent.height
+
+	if ent.state == "alive" then
+		love.graphics.setColor(1,1,1)
+	elseif ent.state == "drowning" then
+		love.graphics.setColor(0,0,1)
+	end
+
 	if anim.transform then
 		love.graphics.draw(anim.spriteSheet,
 						   anim.quads[spriteNum],

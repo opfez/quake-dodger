@@ -10,7 +10,7 @@ DEF_SPRITE_WIDTH = 32
 MAP_COLUMNS = 6
 MAP_ROWS = 8
 
--- DEBUG = true
+DEBUG = true
 
 require("lib/functional")
 require("lib/util")
